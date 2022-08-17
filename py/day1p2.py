@@ -45,7 +45,7 @@ How many sums are larger than the previous sum?
 
 def count_increase(depths: list[int], window_size: int = 3) -> int:
     limit = len(depths) - window_size
-    print(f"div:{len(depths)/window_size} limit:{limit}")
+    print(f"limit:{limit}")
     ans = 0
     curr = sum(depths[0:window_size])
     i = 1
