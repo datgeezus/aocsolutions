@@ -47,14 +47,14 @@ def count_increase(depths: list[int], window_size: int = 3) -> int:
     limit = len(depths) - window_size
     print(f"limit:{limit}")
     ans = 0
-    curr = sum(depths[0:window_size])
+    last = sum(depths[0:window_size])
     i = 1
     while(i <= limit):
-        this = sum(depths[i:i+window_size])
+        curr = sum(depths[i:i+window_size])
         # print(f"n:{this}, c:{curr} increased?:{this > curr}")
-        if this > curr:
+        if curr > last:
             ans = ans + 1
-        curr = this
+        last = curr
         i = i + 1
 
     return ans
