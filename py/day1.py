@@ -77,6 +77,6 @@ if __name__ == "__main__":
         input_string = f.read().splitlines()
         input = list(map(int, input_string))
         n = count_increases(input)
-        print(f"n: {n}")
+        print(f"n: {n}")    # 1564
 
 
