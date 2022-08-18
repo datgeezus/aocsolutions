@@ -52,7 +52,6 @@ def final_position(commands: list[tuple[str, int]]) -> tuple[int, int]:
         x += n * moves[move][0]
         y += n * moves[move][1]
 
-    print(f"final:{x,y}")
     return x,y
 
 def to_position(pos_str: str) -> tuple[str, int]:
