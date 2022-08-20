@@ -34,6 +34,7 @@ Using this new interpretation of the commands, calculate the horizontal position
 depth you would have after following the planned course.
 What do you get if you multiply your final horizontal position by your final depth?
 """
+from utils import load_input
 
 FOWARD = "forward"
 UP = "up"
@@ -74,9 +75,8 @@ if __name__ == "__main__":
     print(f"pos:{pos}")
     assert pos == (15, 60)
 
-    with open("./input2.txt") as f:
-        input_string = f.read().splitlines()
-        input = list(map(to_position, input_string))
-        x,y = final_position(input)
-        assert x*y == 1451210346
-        print(f"pos:{x,y}, mult:{x*y}") # 1451210346
+    input_string = load_input.load("./inputs/input2.txt")
+    input = list(map(to_position, input_string))
+    x,y = final_position(input)
+    assert x*y == 1451210346
+    print(f"pos:{x,y}, mult:{x*y}") # 1451210346

@@ -42,6 +42,7 @@ In this example, there are 5 sums that are larger than the previous sum.
 Consider sums of a three-measurement sliding window.
 How many sums are larger than the previous sum?
 """
+from utils import load_input
 
 def count_increase(depths: list[int], window_size: int = 3) -> int:
     limit = len(depths) - window_size
@@ -74,8 +75,8 @@ if __name__ == "__main__":
         263,
     ]
     assert count_increase(test_input) == 5
-    with open("./input1.txt") as f:
-        input_string = f.read().splitlines()
-        input = list(map(int, input_string))
-        n = count_increase(input)
-        print(f"n: {n}")    # 1611
+
+    input_string = load_input.load("./inputs/input1.txt")
+    input = list(map(int, input_string))
+    n = count_increase(input)
+    print(f"n: {n}")    # 1611

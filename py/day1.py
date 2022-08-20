@@ -44,6 +44,7 @@ In this example, there are 7 measurements that are larger than the previous meas
 
 How many measurements are larger than the previous measurement?
 """
+from utils import load_input
 
 def count_increases(depths: list[int]) -> int:
     curr = depths[0]
@@ -73,10 +74,9 @@ if __name__ == "__main__":
     ]
     assert count_increases(test_input) == 7
 
-    with open("./input1.txt") as f:
-        input_string = f.read().splitlines()
-        input = list(map(int, input_string))
-        n = count_increases(input)
-        print(f"n: {n}")    # 1564
+    input_string = load_input.load("./inputs/input1.txt")
+    input = list(map(int, input_string))
+    n = count_increases(input)
+    print(f"n: {n}")    # 1564
 
 

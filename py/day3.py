@@ -51,6 +51,7 @@ What is the power consumption of the submarine?
 (Be sure to represent your answer in decimal, not binary.)
 
 """
+from utils import load_input
 
 def power_consumption(powers: list[str]) -> tuple[int,int]:
     power_len = len(powers[0])
@@ -90,8 +91,7 @@ if __name__ == "__main__":
 
     assert power_consumption(test_input) == (22,9)
 
-    with open("./input3.txt") as f:
-        inp = f.read().splitlines()
-        gamma, epsilon = power_consumption(inp)
-        print(f"gamma:{gamma}, epsilon:{epsilon}, mult:{gamma*epsilon}")
-        assert gamma * epsilon == 1092896
+    inp = load_input.load("./inputs/input3.txt")
+    gamma, epsilon = power_consumption(inp)
+    print(f"gamma:{gamma}, epsilon:{epsilon}, mult:{gamma*epsilon}")
+    assert gamma * epsilon == 1092896

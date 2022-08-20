@@ -37,6 +37,7 @@ Calculate the horizontal position and depth you would have after following the p
 course.
 What do you get if you multiply your final horizontal position by your final depth?
 """
+from utils import load_input
 
 def final_position(commands: list[tuple[str, int]]) -> tuple[int, int]:
     x = 0
@@ -69,8 +70,7 @@ if __name__ == "__main__":
     ]
     assert final_position(test_input) == (15, 10)
 
-    with open("./input2.txt") as f:
-        input_string = f.read().splitlines()
-        input = list(map(to_position, input_string))
-        x,y = final_position(input)
-        print(f"last postition:{x,y}, mult:{x*y}")
+    input_string = load_input.load("./inputs/input2.txt")
+    input = list(map(to_position, input_string))
+    x,y = final_position(input)
+    print(f"last postition:{x,y}, mult:{x*y}")
