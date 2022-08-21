@@ -136,7 +136,7 @@ def most_least_common(values: list[str]) -> tuple[str,str]:
     # print(ones)
 
     for i,n_ones in enumerate(ones):
-        is_one_common = n_ones > h if h > 1 else n_ones > 0
+        is_one_common = n_ones > h if h > 1 else n_ones >= h
         most[i] = "1" if is_one_common else "0"
         least[i] = "1" if most[i] == "0" else "0"
 
@@ -165,8 +165,6 @@ def ratings(values: list[str]) -> tuple[str, str]:
     return oxigen[0], co2[0]
 
 def find_common(values: list[str], to_find: str, bit: int) -> list[str]:
-    if len(values) == 1:
-        return values
     return [v for v in values if v[bit] == to_find[bit]]
 
 def to_int(inp: tuple[str,str]) -> tuple[int,int]:
@@ -201,7 +199,8 @@ if __name__ == "__main__":
     print(f"ans:{ans}")
     assert ans == (23,10)
 
-    inp = load_input.load("./inputs/input3.txt")
+    # inp = load_input.load("./inputs/input3.txt")
+    inp = load_input.load("./inputs/input3a.txt")
     ans = to_int(ratings(inp))
     print(f"o,co2:{ans}, ans:{ans[0]*ans[1]}")
 
