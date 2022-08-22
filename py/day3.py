@@ -115,60 +115,49 @@ What is the life support rating of the submarine?
 """
 from utils import load_input
 
-def count_ones(values: list[str]) -> list[int]:
-    input_len = len(values[0])
-    ones = [0 for _ in range(input_len)]
-    for value in values:
-        # Count 1s only
-        for i,bit in enumerate(value):
-            ones[i] += 1 if bit == "1" else 0
-    return ones
 
-# Part 1
-def most_least_common(values: list[str]) -> tuple[str,str]:
-    values_len = len(values[0])
-    most = ["" for _ in range(values_len)]
-    least = ["" for _ in range(values_len)]
-    n = len(values)
+# # Part 1
+def solution_one(values_str: list[str]) -> tuple[int,int]:
+    nbits = len(values_str[0])
+    n = len(values_str)
     h = n // 2
+    values = list(map(lambda x: int(x,2), values_str))
 
-    ones = count_ones(values)
-    # print(ones)
+    gamma = 0
+    for i in range(nbits):
+        gamma_bit = count_ones(values, i) > h
+        gamma |= gamma_bit << i
 
-    for i,n_ones in enumerate(ones):
-        is_one_common = n_ones > h if h > 1 else n_ones >= h
-        most[i] = "1" if is_one_common else "0"
-        least[i] = "1" if most[i] == "0" else "0"
+    # inverse of gamma
+    epsilon = gamma ^ int("1" * nbits, 2)
+    return gamma, epsilon
 
-    return ("".join(most),"".join(least))
+def count_ones(values: list[int], bit: int) -> int:
+    return sum(get_bit_value(v, bit) for v in values)
+
+def get_bit_value(value: int, bit: int) -> int:
+    return (value >> bit) & 1
 
 # Part 2
-def ratings(values: list[str]) -> tuple[str, str]:
-    i = 0
-    oxigen = values.copy()
-    while(len(oxigen) > 1):
-        most,_ = most_least_common(oxigen)
-        oxigen = find_common(oxigen, most, i)
-        i += 1
-        # print(f"oxigen:{oxigen}")
-
-    i = 0
+def solution_two(values_str: list[str]) -> tuple[int, int]:
+    last_bit = len(values_str[0]) - 1
+    values = list(map(lambda x: int(x,2), values_str))
+    o2 = values.copy()
     co2 = values.copy()
-    print(f"oxigen:{len(oxigen)}, co2:{len(co2)}")
-    while(len(co2) > 1):
-        _,least = most_least_common(co2)
-        co2 = find_common(co2, least, i)
-        i += 1
 
-    #ans TODO: find a more efficient way
-    print(f"oxigen:{oxigen}, co2:{co2}")
-    return oxigen[0], co2[0]
+    for i in range(last_bit, -1, -1):
+        h = len(o2) / 2
+        o2_bit = count_ones(o2, i) >= h
+        # print(f"i:{i}, h:{h}, ones:{count_ones(o2,i)},o2_bit:{o2_bit}")
+        o2 = [n for n in o2 if get_bit_value(n,i) == o2_bit] or o2
+        # print(f"o2:{list(map(lambda x: format(x, '05b'), o2))}")
 
-def find_common(values: list[str], to_find: str, bit: int) -> list[str]:
-    return [v for v in values if v[bit] == to_find[bit]]
+    for i in range(last_bit, -1, -1):
+        h = len(co2) / 2
+        co2_bit = count_ones(co2, i) < h
+        co2 = [n for n in co2 if get_bit_value(n, i) == co2_bit] or co2
 
-def to_int(inp: tuple[str,str]) -> tuple[int,int]:
-    return int(inp[0],2), int(inp[1],2)
+    return o2[0], co2[0]
 
 if __name__ == "__main__":
     test_input = [
@@ -187,20 +176,22 @@ if __name__ == "__main__":
     ]
 
     print("--Part 1--")
-    assert to_int(most_least_common(test_input)) == (22,9)
+    ans = solution_one(test_input)
+    print(f"ans:{ans}")
+    assert ans == (22,9)
 
     inp = load_input.load("./inputs/input3.txt")
-    gamma, epsilon = to_int(most_least_common(inp))
+    gamma, epsilon = solution_one(inp)
     print(f"gamma:{gamma}, epsilon:{epsilon}, mult:{gamma*epsilon}")
     assert gamma * epsilon == 1092896
 
     print("--Part 2--")
-    ans = to_int(ratings(test_input))
+    ans = solution_two(test_input)
     print(f"ans:{ans}")
     assert ans == (23,10)
 
-    # inp = load_input.load("./inputs/input3.txt")
-    inp = load_input.load("./inputs/input3a.txt")
-    ans = to_int(ratings(inp))
-    print(f"o,co2:{ans}, ans:{ans[0]*ans[1]}")
+    inp = load_input.load("./inputs/input3.txt")
+    ans = solution_two(inp)
+    assert ans == (3443, 1357)
+    print(f"o,co2:{ans}, ans:{ans[0]*ans[1]}") # 4672151
 
