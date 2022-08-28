@@ -75,6 +75,7 @@ To guarantee victory against the giant squid, figure out which board will win fi
 What will your final score be if you choose that board?
 """
 import logging as log
+from utils import args
 
 def gen_numbers(input: list[str]) -> list[int]:
     return list(map(int, input[0]))
@@ -87,11 +88,19 @@ def get_board(input: list[str]):
 
 def gen_boards(input: list[str]) -> dict[int,list]:
     boards = {i:board for i,board in enumerate(get_board(input))}
-    log.warning(f"{boards}")
     return boards
+
+def cache_board(board: list[str]) -> dict[str, tuple[int, int]]:
+    return {v:(x,y) 
+        for x,row in enumerate(board)
+        for y,v in enumerate(row)
+    }
 
 
 if __name__ == "__main__":
+    args = args.get_args()
+    log.basicConfig(level=args.log_level)
+
     test_input = [
         "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1",
 
@@ -114,4 +123,7 @@ if __name__ == "__main__":
         " 2  0 12  3  7",
     ]
 
-    gen_boards(test_input[1::])
+    boards = gen_boards(test_input[1::])
+    log.debug(f"board 0: {boards[0]}")
+    board0 = cache_board(boards[0])
+    log.debug(f"board 0: {board0}")
