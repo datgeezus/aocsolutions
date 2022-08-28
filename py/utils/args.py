@@ -6,7 +6,7 @@ from dataclasses import dataclass
 class Config:
     log_level: str
 
-def get_args():
+def get_args() -> Config:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--log-level",
