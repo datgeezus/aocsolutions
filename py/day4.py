@@ -283,9 +283,9 @@ if __name__ == "__main__":
         last = winner[-1]
         log.debug(f"first winner:{first}")
         log.debug(f"first winner: {prettyprint_board(boards[first.board_number])}")
-        log.info(f"first winner score:{score(boards[first.board_number], first.value)}")
+        log.info(f"first winner score:{score(boards[first.board_number], first.value)}") # 35711
         log.debug(f"last winner:{last}")
         log.debug(f"last winner: {prettyprint_board(boards[last.board_number])}")
-        log.info(f"last winner score:{score(boards[last.board_number], last.value)}")
+        log.info(f"last winner score:{score(boards[last.board_number], last.value)}") # 5586
     else:
         log.error(f"NO WINNERS")
