@@ -43,6 +43,16 @@ def day5(stacks: list[list[str]], moves: list[tuple[int,int,int]]) -> list[str]:
 
     return [s[-1] for s in stacks]
 
+def day5_p2(stacks: list[list[str]], moves: list[tuple[int,int,int]]) -> list[str]:
+    for n,frm,to in moves:
+        slice = len(stacks[frm]) - n
+        new = stacks[frm][slice:]
+        stacks[to].extend(new)
+        del stacks[frm][slice:]
+        # print(f"stacks={stacks}")
+
+    return [s[-1] for s in stacks]
+
 if __name__ == "__main__":
     test_input = [
         "    [D]    ",
@@ -70,6 +80,11 @@ if __name__ == "__main__":
     print(f"stacks={stacks_parsed}")
     print(f"ans={''.join(ans)}")
 
+    stacks_parsed = parse_stacks(stacks)
+    ans = day5_p2(stacks_parsed, moves_parsed)
+    print(f"stacks={stacks_parsed}")
+    print(f"ans={''.join(ans)}")
+
     print("--- Part 1 ---")
     input_raw = load_input.load("./inputs/input5.txt")
     stacks,moves = parse(input_raw)
@@ -80,5 +95,11 @@ if __name__ == "__main__":
     stacks_parsed = parse_stacks(stacks)
     # print(f"stacks={stacks_parsed}")
     ans = day5(stacks_parsed, moves_parsed)
+    print(f"stacks={stacks_parsed}")
+    print(f"ans={''.join(ans)}")
+
+    print("--- Part 2 ---")
+    stacks_parsed = parse_stacks(stacks)
+    ans = day5_p2(stacks_parsed, moves_parsed)
     print(f"stacks={stacks_parsed}")
     print(f"ans={''.join(ans)}")
