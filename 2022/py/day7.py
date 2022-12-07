@@ -51,7 +51,7 @@ def compute_sizes(root: Node) -> None:
 
     root.size = sizes(root)
 
-def sizes(root: Node) -> list[tuple[str,int]]:
+def sizes(root: Node) -> list[tuple[int,str]]:
     ans = []
 
     def dfs(root: Node) -> None:
@@ -60,7 +60,7 @@ def sizes(root: Node) -> list[tuple[str,int]]:
 
         if root.type == "dir":
             # print(f"dir={root.name}")
-            ans.append((root.name, root.size))
+            ans.append((root.size, root.name))
 
         for _,node in root.children.items():
             dfs(node)
@@ -69,8 +69,23 @@ def sizes(root: Node) -> list[tuple[str,int]]:
 
     return ans
 
-def day7p1(sizes: list[tuple[str,int]]) -> int:
-    return sum(map(lambda x: x[1] if x[1] <= 100000 else 0, sizes))
+def day7p1(sizes: list[tuple[int,str]]) -> int:
+    return sum(map(lambda x: x[0] if x[0] <= 100000 else 0, sizes))
+
+def day7p2(sizes: list[tuple[int,str]]) -> int:
+    TOTAL = 70000000
+    TARGET = 30000000
+
+    ans = TOTAL
+    root_diff = TOTAL - sizes[0][0]
+    root_target = TARGET - root_diff
+
+    for size,name in sizes[1:]:
+        if size >= root_target:
+            ans = min(ans, size)
+
+
+    return ans
 
 
 if __name__ == "__main__":
@@ -109,6 +124,8 @@ if __name__ == "__main__":
     print(size)
     ans = day7p1(size)
     print(ans)
+    ans = day7p2(size)
+    print(ans)
 
     print("--- Part 1 ---")
     input_raw = load_input.load("./inputs/input7.txt")
@@ -117,4 +134,8 @@ if __name__ == "__main__":
     size = sizes(tree)
     # print(size)
     ans = day7p1(size)
+    print(ans)
+
+    print("--- Part 2 ---")
+    ans = day7p2(size)
     print(ans)
