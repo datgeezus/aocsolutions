@@ -29,37 +29,48 @@ def build_tree(input: list[str]) -> Node:
         elif cmd[0] == "dir":
             name = cmd[1]
             if root:
-                print(f"Buld dir={name} with parent={root.name}")
+                # print(f"Buld dir={name} with parent={root.name}")
                 root.children[name] = Node("dir", name, parent=root)
         else: # Output
             size = int(cmd[0])
             name = cmd[1]
             if root:
                 root.children[name] = Node("file", name, size, parent=root)
-                root.size+= size
-                if root.parent:
-                    root.parent.size += size
 
     return top
 
-def day7p1(root: Node) -> int:
-    size = 0
-    def dfs(root: Node):
+def compute_sizes(root: Node) -> None:
+    
+    def sizes(root: Node) -> int:
+        if root.type == "file":
+            return root.size
+
+        for _,node in root.children.items():
+            root.size += sizes(node) 
+        return root.size
+
+    root.size = sizes(root)
+
+def sizes(root: Node) -> list[tuple[str,int]]:
+    ans = []
+
+    def dfs(root: Node) -> None:
         if not root:
             return
 
-        nonlocal size
-
-        if root.type == "dir" and root.name != "/" and root.size <= 100000:
-            # print(f"name={root.name}, size={root.size}")
-            size += root.size
+        if root.type == "dir":
+            # print(f"dir={root.name}")
+            ans.append((root.name, root.size))
 
         for _,node in root.children.items():
             dfs(node)
 
     dfs(root)
 
-    return size
+    return ans
+
+def day7p1(sizes: list[tuple[str,int]]) -> int:
+    return sum(map(lambda x: x[1] if x[1] <= 100000 else 0, sizes))
 
 
 if __name__ == "__main__":
@@ -92,11 +103,18 @@ if __name__ == "__main__":
     print("--- Test ---")
     tree = build_tree(test_input)
     print(tree)
-    ans = day7p1(tree)
+    compute_sizes(tree)
+    print(tree)
+    size = sizes(tree)
+    print(size)
+    ans = day7p1(size)
     print(ans)
 
     print("--- Part 1 ---")
     input_raw = load_input.load("./inputs/input7.txt")
     tree = build_tree(input_raw)
-    ans = day7p1(tree)
+    compute_sizes(tree)
+    size = sizes(tree)
+    # print(size)
+    ans = day7p1(size)
     print(ans)
