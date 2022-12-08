@@ -80,7 +80,7 @@ def day7p2(sizes: list[tuple[int,str]]) -> int:
     root_diff = TOTAL - sizes[0][0]
     root_target = TARGET - root_diff
 
-    for size,name in sizes[1:]:
+    for size,_ in sizes[1:]:
         if size >= root_target:
             ans = min(ans, size)
 
