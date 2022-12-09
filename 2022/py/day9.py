@@ -3,7 +3,7 @@ from utils import load_input
 
 Coord = tuple[int,int]
 
-def get_coords(steps: list[tuple[str,int]]) -> list[Coord]:
+def get_head_coords(steps: list[tuple[str,int]]) -> list[Coord]:
     x = 0
     y = 0
     moves = {
@@ -26,23 +26,23 @@ def get_coords(steps: list[tuple[str,int]]) -> list[Coord]:
 
     return visited
 
-def get_diffs(coords: list[Coord]) -> list[int]:
-    diffs = []
+def get_tail_coords(coords: list[Coord]) -> list[Coord]:
+    tail = []
     curr = coords[0]
-    for coord in coords[1:]:
-        dist = math.dist(curr, coord)
-        if dist > 1:
-            diffs.append(dist-1)
-            curr = coord
 
-    return diffs
+    tail.append(curr)
+    for i,coord in enumerate(coords[1:], start=1):
+        dist = math.dist(curr, coord)
+        if dist > 1.5:
+            curr = coords[i-1]
+            tail.append(curr)
+
+    return tail
 
 def day9p1(steps: list[tuple[str,int]]) -> int:
-    coords = get_coords(steps)
-    # print(f"coords={coords}")
-    diffs = get_diffs(coords)
-    # print(f"diffs={diffs}, sum={sum(diffs)}")
-    return math.ceil(sum(diffs)) + 2
+    head = get_head_coords(steps)
+    tail = get_tail_coords(head)
+    return len(set(tail))
 
 
 
