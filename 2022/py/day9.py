@@ -17,8 +17,6 @@ def get_head_coords(steps: list[tuple[str,int]]) -> list[Coord]:
     visited.append((x,y))
     for cmd,n in steps:
         dx,dy = moves[cmd]
-        # x += n * dx
-        # y += n * dy
         for _ in range(n):
             x += dx
             y += dy
