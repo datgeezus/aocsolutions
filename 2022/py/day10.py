@@ -25,7 +25,7 @@ def print_crt(crt: list[str], width: int, height: int) -> None:
 
 def simulate_crt(cpu: list[int], width: int, height: int) -> list[str]:
     crt = ["." for _ in range(width * height)]
-    for cycle,pos in enumerate(cpu, start=0):
+    for cycle,pos in enumerate(cpu):
         x = cycle % width
         if pos-1 <= x and x <= pos+1:
             crt[cycle] = "#"
@@ -33,11 +33,9 @@ def simulate_crt(cpu: list[int], width: int, height: int) -> list[str]:
     return crt
 
 def day10p1(instructions: list[Instruction]) -> int:
-    clocks = [20, 60, 100, 140, 180, 220]
+    cycles = [20, 60, 100, 140, 180, 220]
     cpu = simulate_cpu(instructions)
-    strenghts = [clock * cpu[clock-1] for clock in clocks]
-    # print(f"cpu={cpu}")
-    # print(f"strenghts={strenghts}")
+    strenghts = [cycle * cpu[cycle-1] for cycle in cycles]
     return sum(strenghts)
 
 def day10p2(instructions: list[Instruction]) -> None:
