@@ -2,8 +2,7 @@ from utils import load_input
 
 Instruction = tuple[str,int]
 
-def day10p1(instructions: list[Instruction]) -> int:
-    clocks = [20, 60, 100, 140, 180, 220]
+def simulate_cpu(instructions: list[Instruction]) -> list[int]:
     x = 1
     cpu = [x]
 
@@ -13,11 +12,40 @@ def day10p1(instructions: list[Instruction]) -> int:
             x += val
             cpu.append(x)
 
-    # print(f"cpu={cpu}")
-    strenghts = [clock * cpu[clock-1] for clock in clocks]
-    # print(f"strenghts={strenghts}")
+    return cpu
 
+def print_crt(crt: list[str], width: int, height: int) -> None:
+    i = 0
+    for _ in range(height):
+        row = []
+        for _ in range(width):
+            row.append(crt[i])
+            i += 1
+        print("".join(row))
+
+def simulate_crt(cpu: list[int], width: int, height: int) -> list[str]:
+    crt = ["." for _ in range(width * height)]
+    for cycle,pos in enumerate(cpu, start=0):
+        x = cycle % width
+        if pos-1 <= x and x <= pos+1:
+            crt[cycle] = "#"
+
+    return crt
+
+def day10p1(instructions: list[Instruction]) -> int:
+    clocks = [20, 60, 100, 140, 180, 220]
+    cpu = simulate_cpu(instructions)
+    strenghts = [clock * cpu[clock-1] for clock in clocks]
+    # print(f"cpu={cpu}")
+    # print(f"strenghts={strenghts}")
     return sum(strenghts)
+
+def day10p2(instructions: list[Instruction]) -> None:
+    WIDTH = 40
+    HEIGHT = 6
+    cpu = simulate_cpu(instructions)
+    crt = simulate_crt(cpu, WIDTH, HEIGHT)
+    print_crt(crt, WIDTH, HEIGHT)
 
 def parse(input: str) -> Instruction:
     inst = input.split(" ")
@@ -37,8 +65,23 @@ if __name__ == "__main__":
     ans = day10p1(input)
     print(f"ans={ans}")
 
+    print("--- Test 2 ---")
+    ans = day10p2(input)
+    print(f"ans={ans}")
+
     print("--- Part 1 ---")
     input_raw = load_input.load("./inputs/input10.txt")
     input = list(map(parse, input_raw))
     ans = day10p1(input)
     print(f"ans={ans}")
+
+    print("--- Part 2 ---")
+    ans = day10p2(input)
+    """
+    ####..##..###...##....##.####...##.####.
+    ...#.#..#.#..#.#..#....#.#.......#....#.
+    ..#..#....###..#..#....#.###.....#...#..
+    .#...#....#..#.####....#.#.......#..#...
+    #....#..#.#..#.#..#.#..#.#....#..#.#....
+    ####..##..###..#..#..##..#.....##..####.
+    """
