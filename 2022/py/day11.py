@@ -2,16 +2,27 @@ from utils import load_input
 from dataclasses import dataclass
 from collections import deque
 from functools import reduce
+from typing import Callable
 import heapq
+import sys
+
+sys.set_int_max_str_digits(1000000)
 
 @dataclass
 class Monkey:
     items: deque
-    op: tuple[str, str, str]
+    op: Callable
     test: int
     if_true: int
     if_false: int
     inpected: int = 0
+
+mod = 1
+
+def update_mod(monkeys: list[Monkey]) -> None:
+    global mod
+    for monkey in monkeys:
+        mod *= monkey.test
 
 def parse_monkeys(input: list[str]) -> list[list[str]]:
     monkeys = []
@@ -32,27 +43,28 @@ def create_monkey(input: list[str]) -> Monkey:
     _, items_str, op_str, test_str, if_true_str, if_false_str = input
 
     items = items_str.split(":")[1].split(",")
-    op = tuple(op_str.split("=")[1].strip().split(" "))
     test = int(test_str.split(" ")[-1])
     if_true = int(if_true_str.split(" ")[-1])
     if_false = int(if_false_str.split(" ")[-1])
+    op = op_str.split("=")[1]
+    nop = lambda old,op=op: eval(op)
 
-    return Monkey(deque(map(int, items)), op, test, if_true, if_false)
+    return Monkey(deque(map(int, items)), nop, test, if_true, if_false)
 
-def parse_op(op: tuple[str,str,str], item: int) -> int:
-    left = item if op[0] == "old" else op[0]
-    right = item if op[2] == "old" else op[2]
-    expression = "{} {} {}".format(left,op[1], right)
-    # print(f"evaluating = {expression}")
-    return eval(expression)
+def compute_worry_1(op: Callable, item: int) -> int:
+    return op(item) // 3
 
-def round(monkeys: list[Monkey]) -> None:
+def compute_worry_2(op: Callable, item: int) -> int:
+    worry = op(item)
+    worry %= mod
+    return worry
+
+def round(monkeys: list[Monkey], compute_worry: Callable[[Callable, int], int]) -> None:
     for monkey in monkeys:
         while monkey.items:
             item = monkey.items.popleft()
             monkey.inpected += 1
-            op = monkey.op
-            worry_level = parse_op(op, item) // 3
+            worry_level = compute_worry(monkey.op, item)
             test = monkey.test
             if_true = monkey.if_true
             next_monkey_id = monkey.if_false
@@ -76,9 +88,16 @@ def print_monkeys(monkeys: list[Monkey]) -> None:
         print(monkey)
 
 
-def day11p1(monkeys: list[Monkey], n_rounds: int) -> int:
+def day11p1(monkeys: list[Monkey], n_rounds: int)-> int:
     for _ in range(n_rounds):
-        round(monkeys)
+        round(monkeys, compute_worry_1)
+
+    most_active = most_active_monkeys(monkeys, 2)
+    return reduce(lambda x,y: x*y, map(lambda x: x[0], most_active))
+
+def day11p2(monkeys: list[Monkey], n_rounds: int)-> int:
+    for _ in range(n_rounds):
+        round(monkeys, compute_worry_2)
 
     most_active = most_active_monkeys(monkeys, 2)
     return reduce(lambda x,y: x*y, map(lambda x: x[0], most_active))
@@ -116,11 +135,17 @@ if __name__ == "__main__":
 
     monkeys_raw = parse_monkeys(test_input)
     print(f"n_monkeys={len(monkeys_raw)}")
+
+    print("--- Test 1 ---")
     monkeys = list(map(create_monkey, monkeys_raw))
+    ans = day11p1(monkeys, 20)
     print_monkeys(monkeys)
+    print(ans)
 
     print("--- Test 2 ---")
-    ans = day11p1(monkeys, 20)
+    monkeys = list(map(create_monkey, monkeys_raw))
+    update_mod(monkeys)
+    ans = day11p2(monkeys, 10000)
     print_monkeys(monkeys)
     print(ans)
 
@@ -129,5 +154,13 @@ if __name__ == "__main__":
     monkeys_raw = parse_monkeys(input_raw)
     monkeys = list(map(create_monkey, monkeys_raw))
     ans = day11p1(monkeys, 20)
+    print_monkeys(monkeys)
+    print(ans)
+
+    print("--- Part 2 ---")
+    monkeys_raw = parse_monkeys(input_raw)
+    monkeys = list(map(create_monkey, monkeys_raw))
+    update_mod(monkeys)
+    ans = day11p2(monkeys, 10000)
     print_monkeys(monkeys)
     print(ans)
