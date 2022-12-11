@@ -51,26 +51,23 @@ def create_monkey(input: list[str]) -> Monkey:
 
     return Monkey(deque(map(int, items)), nop, test, if_true, if_false)
 
-def compute_worry_1(op: Callable, item: int) -> int:
-    return op(item) // 3
+def compute_worry_1(worry_level: int) -> int:
+    return worry_level // 3
 
-def compute_worry_2(op: Callable, item: int) -> int:
-    worry = op(item)
-    worry %= mod
-    return worry
+def compute_worry_2(worry_level: int) -> int:
+    return worry_level % mod
 
-def round(monkeys: list[Monkey], compute_worry: Callable[[Callable, int], int]) -> None:
+def round(monkeys: list[Monkey], compute_worry: Callable[[int], int]) -> None:
     for monkey in monkeys:
         while monkey.items:
             item = monkey.items.popleft()
             monkey.inpected += 1
-            worry_level = compute_worry(monkey.op, item)
+            worry_level = compute_worry(monkey.op(item))
             test = monkey.test
             if_true = monkey.if_true
             next_monkey_id = monkey.if_false
             if worry_level % test == 0:
                 next_monkey_id = if_true
-            # print(f"item={item}, worry_level={worry_level}, next_monkey={next_monkey_id}")
             monkeys[next_monkey_id].items.append(worry_level)
 
 def most_active_monkeys(monkeys: list[Monkey], k: int) -> list[tuple[int,int]]:
@@ -96,6 +93,7 @@ def day11p1(monkeys: list[Monkey], n_rounds: int)-> int:
     return reduce(lambda x,y: x*y, map(lambda x: x[0], most_active))
 
 def day11p2(monkeys: list[Monkey], n_rounds: int)-> int:
+    update_mod(monkeys)
     for _ in range(n_rounds):
         round(monkeys, compute_worry_2)
 
@@ -144,7 +142,6 @@ if __name__ == "__main__":
 
     print("--- Test 2 ---")
     monkeys = list(map(create_monkey, monkeys_raw))
-    update_mod(monkeys)
     ans = day11p2(monkeys, 10000)
     print_monkeys(monkeys)
     print(ans)
@@ -160,7 +157,7 @@ if __name__ == "__main__":
     print("--- Part 2 ---")
     monkeys_raw = parse_monkeys(input_raw)
     monkeys = list(map(create_monkey, monkeys_raw))
-    update_mod(monkeys)
     ans = day11p2(monkeys, 10000)
     print_monkeys(monkeys)
-    print(ans)
+    assert ans == 14952185856, f"expected:14952185856, ans={ans}"
+    print(ans) # 14952185856
