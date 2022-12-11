@@ -44,7 +44,7 @@ def create_monkey(input: list[str]) -> Monkey:
     if_true = int(if_true_str.split(" ")[-1])
     if_false = int(if_false_str.split(" ")[-1])
     op = op_str.split("=")[1]
-    nop = lambda old,op=op: eval(op)
+    nop = lambda old,op=op: eval(op, {"old":old})
 
     return Monkey(deque(map(int, items)), nop, test, if_true, if_false)
 
