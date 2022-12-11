@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from collections import deque
+import heapq
 
 @dataclass
 class Monkey:
@@ -33,7 +34,41 @@ def create_monkey(input: list[str]) -> Monkey:
 
     return Monkey(deque(map(int, items)), op, test, if_true, if_false)
 
+def parse_op(op: tuple[str,str,str], item: int) -> int:
+    return 1
 
+def round(monkeys: list[Monkey]) -> None:
+    for monkey in monkeys:
+        item = monkey.items.popleft()
+        op = monkey.op
+        worry_level = parse_op(op, item) // 3
+        test = monkey.test
+        if_true = monkey.if_true
+        next_monkey_id = monkey.if_false
+        if worry_level % test == 0:
+            next_monkey_id = if_true
+        monkeys[next_monkey_id].items.append(item)
+
+def most_active_monkeys(monkeys: list[Monkey], k: int) -> list[tuple[int,int]]:
+    active = []
+    for idx,monkey in enumerate(monkeys):
+        n_items = len(monkey.items)
+        heapq.heappush(active, (n_items, idx))
+        if len(active) > k:
+            heapq.heappop(active)
+
+    return active
+
+
+def day11p1(monkeys: list[Monkey]) -> int:
+    ans = 0
+    n_rounds = 1
+    for _ in range(n_rounds):
+        round(monkeys)
+
+    most_active = most_active_monkeys(monkeys, 2)
+
+    return sum(map(lambda x: x[0], most_active))
 
 if __name__ == "__main__":
     test_input = [
