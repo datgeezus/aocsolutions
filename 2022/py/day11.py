@@ -103,4 +103,5 @@ if __name__ == "__main__":
 
     monkeys_raw = parse_monkeys(test_input)
     monkeys = list(map(create_monkey, monkeys_raw))
-    print(monkeys)
+    ans = day11p1(monkeys)
+    print(ans)
