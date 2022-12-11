@@ -4,9 +4,6 @@ from collections import deque
 from functools import reduce
 from typing import Callable
 import heapq
-import sys
-
-sys.set_int_max_str_digits(1000000)
 
 @dataclass
 class Monkey:
