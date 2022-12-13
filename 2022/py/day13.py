@@ -6,7 +6,7 @@ def gen_input(input: list[str]):
         yield (input[idx], input[idx+1])
 
 def compare(left: list[int], right: list[int]) -> bool:
-    print(f"left={left}, right={right}, same size={len(left) == len(right)}")
+    # print(f"left={left}, right={right}, same size={len(left) == len(right)}")
 
     n_left = len(left)
     n_right = len(right)
@@ -36,8 +36,26 @@ def compare(left: list[int], right: list[int]) -> bool:
 
     return True
 
+def compare2(left, right) -> bool:
+    if type(left) == int:
+        if type(right) == int:
+            return left - right
+        else:
+            return compare2([left], right)
+    else:
+        if type(right) == int:
+            return compare2(left, [right])
+
+    for lleft, rright in zip(left, right):
+        ans = compare2(lleft, rright)
+        if ans:
+            return ans
+
+    return len(left) - len(right)
+
 def day13p1(input: list[str]):
     ans = []
+    ans2 = []
     for idx,pair in enumerate(gen_input(input), start=1):
         l = eval(pair[0])
         r = eval(pair[1])
@@ -45,6 +63,11 @@ def day13p1(input: list[str]):
         right = r if type(r) == list else [r]
         if compare(left, right):
             ans.append(idx)
+        if compare2(l, r) < 0:
+            ans2.append(idx)
+
+
+    print(f"ans2={ans2}, sum={sum(ans2)}")
 
     return ans
 
@@ -80,7 +103,7 @@ if __name__ == "__main__":
     ans = day13p1(test_input)
     print(f"ans={ans}, sum={sum(ans)}")
 
-    # print("--- Part 1 ---")
-    # input_raw = load_input.load("./inputs/input13.txt")
-    # ans = day13p1(input_raw)
-    # print(f"ans={ans}, sum={sum(ans)}")
+    print("--- Part 1 ---")
+    input_raw = load_input.load("./inputs/input13.txt")
+    ans = day13p1(input_raw)
+    print(f"ans={ans}, sum={sum(ans)}")
