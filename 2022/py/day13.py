@@ -5,36 +5,30 @@ def gen_input(input: list[str]):
     for idx in range(0, n, 3):
         yield (input[idx], input[idx+1])
 
-def compare(left: list[int], right: list[int]) -> bool:
-    # print(f"left={left}, right={right}, same size={len(left) == len(right)}")
+def compare(left: list[int], right: list[int]) -> int:
+    print(f"left={left}, right={right}, same size={len(left) == len(right)}")
 
     n_left = len(left)
     n_right = len(right)
     # if n_left > n_right:
     #     return False
-    n = max(n_left, n_right)
 
-    for i in range(n):
-        if (i > n_left-1):
-            return True
-        if (i > n_right-1):
-            return False
-            
-        l_val = left[i]
-        r_val = right[i]
+    for l_val,r_val in zip(left, right):
         l_type = type(l_val)
         r_type = type(r_val)
         if l_type == int and r_type == int:
             if l_val == r_val:
                 continue
             else:
-                return l_val < r_val
+                return l_val - r_val
         else:
             new_left: list[int] = l_val if l_type == list else [l_val]
             new_right: list[int] = r_val if r_type == list else [r_val]
-            return compare(new_left, new_right)
+            ans = compare(new_left, new_right)
+            if ans:
+                return ans
 
-    return True
+    return n_left - n_right
 
 def compare2(left, right) -> int:
     if type(left) == int:
@@ -61,7 +55,7 @@ def day13p1(input: list[str]):
         r = eval(pair[1])
         left = l if type(l) == list else [l]
         right = r if type(r) == list else [r]
-        if compare(left, right):
+        if compare(left, right) < 0:
             ans.append(idx)
         if compare2(l, r) < 0:
             ans2.append(idx)
