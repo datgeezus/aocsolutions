@@ -36,7 +36,7 @@ def compare(left: list[int], right: list[int]) -> bool:
 
     return True
 
-def compare2(left, right) -> bool:
+def compare2(left, right) -> int:
     if type(left) == int:
         if type(right) == int:
             return left - right
