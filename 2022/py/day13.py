@@ -12,8 +12,11 @@ def compare(left: list[int], right: list[int]) -> bool:
     n_right = len(right)
     # if n_left > n_right:
     #     return False
+    n = max(n_left, n_right)
 
-    for i in range(n_left):
+    for i in range(n):
+        if (i > n_left-1):
+            return True
         if (i > n_right-1):
             return False
             
