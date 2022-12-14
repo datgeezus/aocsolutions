@@ -55,7 +55,7 @@ def normalize(input: list[str]) -> tuple[Point, list[list[Point]]]:
 
 
 def traverse(rocks: set[Point], start: Point, limit: Point) -> None:
-    X, Y = (9,9)
+    X, Y = (10,10)
     MOVES = [(0,1), (-1,1), (1,1)]
     path = [
         ["." for _ in range(12)]
@@ -68,9 +68,9 @@ def traverse(rocks: set[Point], start: Point, limit: Point) -> None:
         x,y = point
         # print(point)
         return (
-            x >= 0
+            x > 0
             and x < X
-            and y >= 0
+            # and y >= 0
             and y < Y
             and path[y][x] != "o"
             and path[y][x] != "#"
@@ -85,9 +85,10 @@ def traverse(rocks: set[Point], start: Point, limit: Point) -> None:
             path[py][px] = "o"
             return
 
+        # print(point)
         for dx,dy in MOVES:
             x_ = x + dx
-            y_ = x + dy
+            y_ = y + dy
             dfs((x_, y_), (x, y))
 
     print_path(path)
